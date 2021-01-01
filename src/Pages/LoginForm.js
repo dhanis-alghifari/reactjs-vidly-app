@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Joi from "joi";
 import Input from "../components/Input";
 
 export default class LoginForm extends Component {
@@ -14,23 +15,27 @@ export default class LoginForm extends Component {
     };
   }
 
+  schema = Joi.object().keys({
+    username: Joi.string().required().label("Username"),
+    password: Joi.string().required().label("Password"),
+  });
+
   validate = () => {
+    const { error } = this.schema.validate(this.state.account, {
+      abortEarly: false,
+    });
+    if (!error) return null;
+
     const errors = {};
-    const { account } = this.state;
-    if (account.username.length === 0) errors.username = "Username is required";
-
-    if (account.password.length === 0) errors.password = "Password is required";
-
-    return Object.keys(errors).length === 0 ? null : errors;
+    for (let item of error.details) errors[item.path[0]] = item.message;
+    return errors;
   };
 
   validateProperty = ({ name, value }) => {
-    if (name === "username") {
-      if (value.length === 0) return "Username is required";
-    }
-    if (name === "password") {
-      if (value.length === 0) return "Password is required";
-    }
+    const obj = { [name]: value };
+    const schemas = { [name]: this.schema[name] };
+    const error = this.schema.validate(obj, schemas);
+    return error ? error.details[0].message : null;
   };
 
   handleSubmit = (e) => {
