@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Joi from "joi";
+import Joi from "joi-browser";
 import Input from "../components/Input";
 
 export default class LoginForm extends Component {
@@ -15,13 +15,13 @@ export default class LoginForm extends Component {
     };
   }
 
-  schema = Joi.object().keys({
+  schema = {
     username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
-  });
+  };
 
   validate = () => {
-    const { error } = this.schema.validate(this.state.account, {
+    const { error } = Joi.validate(this.state.account, this.schema, {
       abortEarly: false,
     });
     if (!error) return null;
@@ -34,7 +34,7 @@ export default class LoginForm extends Component {
   validateProperty = ({ name, value }) => {
     const obj = { [name]: value };
     const schemas = { [name]: this.schema[name] };
-    const {error} = this.schema.validate(obj, schemas);
+    const { error } = Joi.validate(obj, schemas);
     return error ? error.details[0].message : null;
   };
 
@@ -84,7 +84,9 @@ export default class LoginForm extends Component {
             type="password"
             error={errors.password}
           />
-          <button disabled={this.validate()} className="btn btn-primary">Login</button>
+          <button disabled={this.validate()} className="btn btn-primary">
+            Login
+          </button>
         </form>
       </div>
     );
