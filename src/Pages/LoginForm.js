@@ -34,7 +34,7 @@ export default class LoginForm extends Component {
   validateProperty = ({ name, value }) => {
     const obj = { [name]: value };
     const schemas = { [name]: this.schema[name] };
-    const error = this.schema.validate(obj, schemas);
+    const {error} = this.schema.validate(obj, schemas);
     return error ? error.details[0].message : null;
   };
 
@@ -84,7 +84,7 @@ export default class LoginForm extends Component {
             type="password"
             error={errors.password}
           />
-          <button className="btn btn-primary">Login</button>
+          <button disabled={this.validate()} className="btn btn-primary">Login</button>
         </form>
       </div>
     );
