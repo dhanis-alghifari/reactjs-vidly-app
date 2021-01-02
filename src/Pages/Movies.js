@@ -5,6 +5,7 @@ import { paginate } from "../utils/paginate";
 import { Link } from "react-router-dom";
 import ListGroup from "../components/ListGroup";
 import MoviesTable from "../components/MoviesTable";
+import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import _ from "lodash";
 
@@ -17,6 +18,8 @@ export default class Movies extends Component {
       genres: [],
       pageSize: 4,
       currentPage: 1,
+      searchQuery: "",
+      selectedGenre: null,
       sortColumn: { path: "title", order: "asc" },
     };
   }
@@ -58,10 +61,18 @@ export default class Movies extends Component {
   };
 
   handleGenreSelect = (genre) => {
-    console.log(genre);
     this.setState({
       selectedGenre: genre,
       currentPage: 1,
+      searchQuery: "",
+    });
+  };
+
+  handleSearch = (query) => {
+    this.setState({
+      selectedGenre: null,
+      currentPage: 1,
+      searchQuery: query,
     });
   };
 
@@ -75,13 +86,17 @@ export default class Movies extends Component {
       pageSize,
       currentPage,
       selectedGenre,
+      searchQuery,
       sortColumn,
     } = this.state;
 
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? Allmovies.filter((m) => m.genre._id === selectedGenre._id)
-        : Allmovies;
+    let filtered = Allmovies;
+    if (searchQuery)
+      filtered = Allmovies.filter(m =>
+        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+    else if (selectedGenre && selectedGenre._id)
+      filtered = Allmovies.filter(m => m.genre._id === selectedGenre._id);
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
@@ -97,6 +112,7 @@ export default class Movies extends Component {
       genres,
       selectedGenre,
       sortColumn,
+      searchQuery,
     } = this.state;
     const { totalCount, data: movies } = this.getPagedData();
 
@@ -120,6 +136,7 @@ export default class Movies extends Component {
             Add Movie
           </Link>
           <p>Showing {dataMovies} movies in the database.</p>
+          <SearchBar value={searchQuery} onChange={this.handleSearch} />
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}
