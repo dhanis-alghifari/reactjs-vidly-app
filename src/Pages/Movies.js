@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { getGenres } from "../services/fakeGenreService";
 import { getMovies } from "../services/fakeMovieService";
 import { paginate } from "../utils/paginate";
+import { Link } from "react-router-dom";
 import ListGroup from "../components/ListGroup";
 import MoviesTable from "../components/MoviesTable";
 import Pagination from "../components/Pagination";
@@ -111,6 +112,13 @@ export default class Movies extends Component {
           />
         </div>
         <div className="col">
+          <Link
+            to="/movies/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+          >
+            Add Movie
+          </Link>
           <p>Showing {dataMovies} movies in the database.</p>
           <MoviesTable
             movies={movies}

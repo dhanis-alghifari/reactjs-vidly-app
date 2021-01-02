@@ -44,8 +44,8 @@ export default class MoviesTable extends Component {
           </button>
 
           <NavLink to={`/movies/${movie._id}`}>
-            <button className="btn btn-icon btn-sm btn-info ml-2">
-              Detail
+            <button className="btn btn-icon btn-sm btn-warning ml-2">
+              Edit
             </button>
           </NavLink>
         </>
