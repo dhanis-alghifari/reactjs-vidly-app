@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getGenres } from "../services/fakeGenreService";
+import { getGenres } from "../services/genreService";
 import { getMovies } from "../services/fakeMovieService";
 import { paginate } from "../utils/paginate";
 import { Link } from "react-router-dom";
@@ -24,8 +24,9 @@ export default class Movies extends Component {
     };
   }
 
-  componentDidMount() {
-    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
+  async componentDidMount() {
+    const {data} = await getGenres();
+    const genres = [{ _id: "", name: "All Genres" }, ...data];
 
     this.setState({
       Allmovies: getMovies(),
