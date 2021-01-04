@@ -7,7 +7,7 @@ function Select({ name, label, options, error, ...rest }) {
       <select name={name} id={name} {...rest} className="form-control">
         <option value="" />
         {options.map((option) => (
-          <option key={option.id} value={option._id}>
+          <option key={option._id} value={option._id}>
             {option.name}
           </option>
         ))}
