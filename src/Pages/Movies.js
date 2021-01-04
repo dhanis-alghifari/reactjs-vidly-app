@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { getGenres } from "../services/genreService";
-import { getMovies } from "../services/fakeMovieService";
+import { deleteMovie, getMovies } from "../services/movieService";
 import { paginate } from "../utils/paginate";
 import { Link } from "react-router-dom";
 import ListGroup from "../components/ListGroup";
@@ -8,6 +8,7 @@ import MoviesTable from "../components/MoviesTable";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 export default class Movies extends Component {
   constructor(props) {
@@ -25,22 +26,48 @@ export default class Movies extends Component {
   }
 
   async componentDidMount() {
-    const {data} = await getGenres();
+    const { data } = await getGenres();
     const genres = [{ _id: "", name: "All Genres" }, ...data];
 
+    const { data: Allmovies } = await getMovies();
+
     this.setState({
-      Allmovies: getMovies(),
+      Allmovies,
       genres,
     });
   }
 
-  handleDelete = (_id) => {
-    const { Allmovies } = this.state;
-    const film = Allmovies.filter((newListMovie) => newListMovie._id !== _id);
+  handleDelete = async (_id) => {
+    const originalMovies = this.state.Allmovies;
+
+    const film = originalMovies.filter(
+      (newListMovie) => newListMovie._id !== _id
+    );
     console.log(film);
     this.setState({
-      Allmovies: film,
+      film,
     });
+    
+
+    try {
+      await deleteMovie(_id);
+      toast.info("Delete Movie Succes", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error("this movie has already been deleted");
+        this.setState({
+          film: originalMovies,
+        });
+      }
+    }
   };
 
   handleLike = (movie) => {
@@ -93,11 +120,11 @@ export default class Movies extends Component {
 
     let filtered = Allmovies;
     if (searchQuery)
-      filtered = Allmovies.filter(m =>
+      filtered = Allmovies.filter((m) =>
         m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
     else if (selectedGenre && selectedGenre._id)
-      filtered = Allmovies.filter(m => m.genre._id === selectedGenre._id);
+      filtered = Allmovies.filter((m) => m.genre._id === selectedGenre._id);
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
