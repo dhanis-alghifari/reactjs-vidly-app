@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ user }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light ">
       <Link className="navbar-brand" to="/">
@@ -35,16 +35,36 @@ function Navbar() {
               Rentals
             </NavLink>
           </li>
-          <li className="nav-item">
-            <NavLink className="nav-item nav-link" to="/login">
-              Login
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-item nav-link" to="/register">
-              Register
-            </NavLink>
-          </li>
+          {!user && (
+            <>
+              <li className="nav-item">
+                <NavLink className="nav-item nav-link" to="/login">
+                  Login
+                </NavLink>
+              </li>
+
+              <li className="nav-item">
+                <NavLink className="nav-item nav-link" to="/register">
+                  Register
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {user && (
+            <>
+              <li className="nav-item">
+                <NavLink className="nav-item nav-link" to="/profile">
+                  {user.name}
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className="nav-item nav-link" to="/logout">
+                  Logout
+                </NavLink>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>
