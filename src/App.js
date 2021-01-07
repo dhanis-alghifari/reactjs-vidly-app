@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar";
 import Customers from "./Pages/Customers";
 import LoginForm from "./Pages/LoginForm";
+import Logout from "./Pages/Logout";
 import MovieForm from "./Pages/MovieForm";
 import Movies from "./Pages/Movies";
 import NotFound from "./Pages/NotFound";
@@ -21,9 +22,7 @@ class App extends Component {
       const user = jwtDecode(jwt);
       console.log(user);
       this.setState({ user });
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
   render() {
@@ -35,6 +34,7 @@ class App extends Component {
           <Switch>
             <Route path="/register" component={Register} />
             <Route path="/login" component={LoginForm} />
+            <Route path="/logout" component={Logout} />
             <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={Movies} />
             <Route path="/customers" component={Customers} />
