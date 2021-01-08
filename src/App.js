@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import auth from "./services/authService";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Customers from "./Pages/Customers";
 import LoginForm from "./Pages/LoginForm";
 import Logout from "./Pages/Logout";
@@ -22,17 +23,21 @@ class App extends Component {
   }
 
   render() {
+    const { user } = this.state;
     return (
       <>
         <ToastContainer />
-        <Navbar user={this.state.user} />
+        <Navbar user={user} />
         <div className="container">
           <Switch>
             <Route path="/register" component={Register} />
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />
-            <Route path="/movies/:id" component={MovieForm} />
-            <Route path="/movies" component={Movies} />
+            <ProtectedRoute path="/movies/:id" component={MovieForm} />
+            <Route
+              path="/movies"
+              render={(props) => <Movies {...props} user={this.state.user} />}
+            />
             <Route path="/customers" component={Customers} />
             <Route path="/rentals" component={Rentals} />
             <Route path="/not-found" component={NotFound} />

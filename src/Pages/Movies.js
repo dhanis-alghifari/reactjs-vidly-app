@@ -47,7 +47,6 @@ export default class Movies extends Component {
     this.setState({
       film,
     });
-    
 
     try {
       await deleteMovie(_id);
@@ -143,6 +142,7 @@ export default class Movies extends Component {
       searchQuery,
     } = this.state;
     const { totalCount, data: movies } = this.getPagedData();
+    const { user } = this.props;
 
     const dataMovies = totalCount === 0 ? " 0 " : totalCount;
 
@@ -156,13 +156,15 @@ export default class Movies extends Component {
           />
         </div>
         <div className="col">
-          <Link
-            to="/movies/new"
-            className="btn btn-primary"
-            style={{ marginBottom: 20 }}
-          >
-            Add Movie
-          </Link>
+          {user && (
+            <Link
+              to="/movies/new"
+              className="btn btn-primary"
+              style={{ marginBottom: 20 }}
+            >
+              Add Movie
+            </Link>
+          )}
           <p>Showing {dataMovies} movies in the database.</p>
           <SearchBar value={searchQuery} onChange={this.handleSearch} />
           <MoviesTable
